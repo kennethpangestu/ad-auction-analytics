@@ -16,7 +16,6 @@ def connect(db_path: str | Path) -> sqlite3.Connection:
     # so durability during the load is not needed.
     conn.execute("PRAGMA journal_mode = OFF")
     conn.execute("PRAGMA synchronous = OFF")
-    conn.execute("PRAGMA temp_store = MEMORY")
     conn.execute("PRAGMA cache_size = -512000")  # about 500 MB
     return conn
 

@@ -5,13 +5,8 @@ SELECT DISTINCT day_key, day_key / 7, day_key % 7
 FROM fact_impression
 ORDER BY day_key;
 
-INSERT INTO dim_campaign (campaign_id, first_day, last_day, active_days, conversion_value)
-SELECT
-    campaign_id,
-    MIN(day_key),
-    MAX(day_key),
-    COUNT(DISTINCT day_key),
-    AVG(CASE WHEN attributed = 1 THEN cpo END)
+INSERT INTO dim_campaign (campaign_id, first_day, last_day, active_days, avg_cpo)
+SELECT campaign_id, MIN(day_key), MAX(day_key), COUNT(DISTINCT day_key), AVG(cpo)
 FROM fact_impression
 GROUP BY campaign_id;
 

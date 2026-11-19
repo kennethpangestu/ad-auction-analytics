@@ -30,6 +30,10 @@ class RunSummary:
     def checks_passed(self) -> int:
         return sum(c.passed for c in self.checks)
 
+    @property
+    def warnings(self) -> int:
+        return sum(not c.passed for c in self.checks if c.severity == "warn")
+
 
 def _now() -> str:
     return datetime.now(UTC).isoformat(timespec="seconds")
@@ -75,9 +79,9 @@ def run(
 
         checks = quality.run_checks(conn, run_id)
         for c in checks:
+            status = "PASS" if c.passed else ("WARN" if c.severity == "warn" else "FAIL")
             level = logging.INFO if c.passed else logging.WARNING
-            log.log(level, "dq %-32s %s (%s failing rows)", c.name,
-                    "PASS" if c.passed else "FAIL", f"{c.failing_rows:,}")
+            log.log(level, "dq %-32s %s (%s rows)", c.name, status, f"{c.failing_rows:,}")
         quality.raise_on_errors(checks)
 
         log.info("marts: %s", ", ".join(db.run_sql_folder(conn, "marts")))

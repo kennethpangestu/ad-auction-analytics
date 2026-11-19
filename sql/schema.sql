@@ -1,8 +1,9 @@
 -- Warehouse schema: one staging table, a star schema, and run metadata.
 -- The star schema is rebuilt on every run. Run metadata is kept across runs.
 
-DROP TABLE IF EXISTS mart_hourly;
-DROP TABLE IF EXISTS mart_cost_deciles;
+DROP TABLE IF EXISTS mart_conversion_delay;
+DROP TABLE IF EXISTS mart_frequency;
+DROP TABLE IF EXISTS mart_price_deciles;
 DROP TABLE IF EXISTS mart_daily;
 DROP TABLE IF EXISTS mart_campaign_daily;
 DROP TABLE IF EXISTS fact_conversion;
@@ -45,7 +46,7 @@ CREATE TABLE dim_campaign (
     first_day       INTEGER NOT NULL,
     last_day        INTEGER NOT NULL,
     active_days     INTEGER NOT NULL,
-    conversion_value REAL  -- typical value (cpo) of an attributed conversion
+    avg_cpo         REAL NOT NULL
 );
 
 CREATE TABLE dim_user (
@@ -64,6 +65,7 @@ CREATE TABLE fact_impression (
     hour_of_day           INTEGER NOT NULL,
     user_id               INTEGER NOT NULL REFERENCES dim_user (user_id),
     campaign_id           INTEGER NOT NULL REFERENCES dim_campaign (campaign_id),
+    impression_number     INTEGER NOT NULL,  -- 1 = first time this user saw this campaign
     cost                  REAL    NOT NULL,  -- price paid in the auction
     click                 INTEGER NOT NULL,
     click_pos             INTEGER,
@@ -72,27 +74,33 @@ CREATE TABLE fact_impression (
     conversion_id         INTEGER,
     conversion_ts         INTEGER,
     attributed            INTEGER NOT NULL,
-    cpo                   REAL,
+    is_last_click         INTEGER NOT NULL,  -- last click before its conversion
+    credited              INTEGER NOT NULL,  -- last click of an attributed conversion
+    cpo                   REAL    NOT NULL,  -- advertiser's value for an attributed order
     time_since_last_click INTEGER,
     cat1 INTEGER, cat2 INTEGER, cat3 INTEGER, cat4 INTEGER, cat5 INTEGER,
     cat6 INTEGER, cat7 INTEGER, cat8 INTEGER, cat9 INTEGER
 );
 
--- Grain: one row per conversion, with its journey summarized.
+-- Grain: one row per conversion journey, keyed by (conversion_id, user_id)
+-- because a small number of anonymized conversion_ids are shared by users.
+-- In this dataset conversions are post-click: every touchpoint is a click.
 CREATE TABLE fact_conversion (
-    conversion_id        INTEGER PRIMARY KEY,
-    user_id              INTEGER NOT NULL REFERENCES dim_user (user_id),
-    campaign_id          INTEGER NOT NULL REFERENCES dim_campaign (campaign_id),
-    conversion_ts        INTEGER NOT NULL,
-    conversion_day       INTEGER NOT NULL,
-    touch_impressions    INTEGER NOT NULL,
-    touch_clicks         INTEGER NOT NULL,
-    first_touch_ts       INTEGER NOT NULL,
-    last_touch_ts        INTEGER NOT NULL,
-    hours_to_convert     REAL    NOT NULL,  -- from last impression to conversion
-    attributed           INTEGER NOT NULL,
-    journey_cost         REAL    NOT NULL,
-    cpo                  REAL
+    conversion_key   INTEGER PRIMARY KEY,
+    conversion_id    INTEGER NOT NULL,
+    user_id          INTEGER NOT NULL REFERENCES dim_user (user_id),
+    campaign_id      INTEGER NOT NULL REFERENCES dim_campaign (campaign_id),
+    conversion_ts    INTEGER NOT NULL,
+    conversion_day   INTEGER NOT NULL,
+    clicks_in_data   INTEGER NOT NULL,  -- clicked impressions in this sample
+    clicks_total     INTEGER NOT NULL,  -- clicks before the conversion (click_nb)
+    first_click_ts   INTEGER NOT NULL,
+    last_click_ts    INTEGER,           -- NULL when the last click was sampled out
+    hours_to_convert REAL,              -- from the last click to the conversion
+    attributed       INTEGER NOT NULL,
+    journey_cost     REAL    NOT NULL,
+    cpo              REAL    NOT NULL,
+    UNIQUE (conversion_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS pipeline_runs (

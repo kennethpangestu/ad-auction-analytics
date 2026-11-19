@@ -29,7 +29,7 @@ def test_sentinels_become_null(warehouse):
     nulls = conn.execute(
         "SELECT COUNT(*) FROM fact_impression WHERE conversion = 0 AND conversion_id IS NULL"
     ).fetchone()[0]
-    assert nulls == 3
+    assert nulls == 4
     assert conn.execute(
         "SELECT COUNT(*) FROM fact_impression WHERE conversion_id = -1 OR conversion_ts = -1"
     ).fetchone()[0] == 0
@@ -56,16 +56,34 @@ def test_dimensions(warehouse):
     assert user1 == (3, 1)
 
 
+def test_last_click_credit(warehouse):
+    conn = sqlite3.connect(warehouse)
+    rows = conn.execute(
+        "SELECT impression_id, is_last_click, credited FROM fact_impression"
+        " WHERE is_last_click = 1 ORDER BY impression_id"
+    ).fetchall()
+    # row 2 is the last click of an unattributed conversion, row 3 of an attributed one
+    assert rows == [(2, 1, 0), (3, 1, 1)]
+
+
+def test_impression_number_counts_per_user_and_campaign(warehouse):
+    conn = sqlite3.connect(warehouse)
+    numbers = [r[0] for r in conn.execute(
+        "SELECT impression_number FROM fact_impression ORDER BY impression_id")]
+    assert numbers == [1, 1, 1, 2, 3, 1, 2]
+
+
 def test_conversion_journeys(warehouse):
     conn = sqlite3.connect(warehouse)
     df = pd.read_sql("SELECT * FROM fact_conversion ORDER BY conversion_id", conn)
     assert df["conversion_id"].tolist() == [500, 501]
     journey = df.iloc[0]
-    assert journey["touch_impressions"] == 3
-    assert journey["touch_clicks"] == 2
+    assert journey["clicks_in_data"] == 2
+    assert journey["clicks_total"] == 2
     assert journey["attributed"] == 1
-    assert journey["journey_cost"] == pytest.approx(1.75)
-    assert journey["hours_to_convert"] == pytest.approx((3_700 - 100) / 3600)
+    assert journey["journey_cost"] == pytest.approx(1.5)
+    assert journey["last_click_ts"] == 18_000
+    assert journey["hours_to_convert"] == pytest.approx((DAY + 3_700 - 18_000) / 3600)
 
 
 def test_rerun_is_idempotent(tmp_path, source_file):

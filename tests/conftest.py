@@ -16,12 +16,13 @@ CATS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 # timestamp, uid, campaign, conversion, conversion_timestamp, conversion_id,
 # attribution, click, click_pos, click_nb, cost, cpo, time_since_last_click
 BASE_ROWS = [
-    # user 1 sees campaign 10 three times, clicks twice, converts (attributed)
+    # user 1 clicks campaign 10 twice and converts; the advertiser credits Criteo
     (100, 1, 10, 1, DAY + 3_700, 500, 1, 1, 0, 2, 0.50, 20.0, -1),
     (200, 2, 10, 0, -1, -1, 0, 0, -1, -1, 0.20, 20.0, -1),
-    (300, 2, 20, 1, 50_000, 501, 0, 0, -1, -1, 0.40, 8.0, -1),
+    # user 2 converts after one click on campaign 20, but it is not attributed
+    (300, 2, 20, 1, 50_000, 501, 0, 1, 0, 1, 0.40, 8.0, -1),
     (18_000, 1, 10, 1, DAY + 3_700, 500, 1, 1, 1, 2, 1.00, 20.0, 17_900),
-    (DAY + 100, 1, 10, 1, DAY + 3_700, 500, 1, 0, -1, -1, 0.25, 20.0, 68_500),
+    (DAY + 100, 1, 10, 0, -1, -1, 0, 0, -1, -1, 0.25, 20.0, 68_500),
     # user 3: a click without a conversion, then a plain impression
     (2 * DAY + 10, 3, 20, 0, -1, -1, 0, 1, -1, -1, 0.30, 8.0, -1),
     (2 * DAY + 20, 3, 20, 0, -1, -1, 0, 0, -1, -1, 0.10, 8.0, 10),

@@ -55,5 +55,6 @@ def test_a_perfect_score_beats_a_flat_bid():
     perfect = conv + 1e-6
     flat = np.ones_like(cost)
     curve = spend_curve({"perfect": perfect, "flat": flat}, cost, conv, conv, np.array([0.2]))
-    by = curve.set_index("strategy")["conversion_share"]
-    assert by["perfect"] > by["flat"]
+    by = curve.set_index("strategy")
+    assert by.loc["perfect", "conversion_share"] > by.loc["flat", "conversion_share"]
+    assert by.loc["perfect", "value_share"] > by.loc["flat", "value_share"]

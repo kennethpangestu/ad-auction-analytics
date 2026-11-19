@@ -31,6 +31,15 @@ def test_feature_matrix_shape_and_determinism():
     assert np.all(a.sum(axis=1).A1 == 19)
 
 
+def test_user_history_adds_five_features():
+    df = _frame(50)
+    df["time_since_last_click"] = np.where(np.arange(50) % 2 == 0, np.nan, 3600.0)
+    df["impression_number"] = np.arange(1, 51)
+    df["hour_of_day"] = np.arange(50) % 24
+    m = feature_matrix(df)
+    assert np.all(m.sum(axis=1).A1 == 24)
+
+
 def test_same_value_in_different_fields_hashes_differently():
     df = pd.DataFrame({"campaign_id": [7]} | {c: [7] for c in CAT_COLUMNS})
     m = feature_matrix(df)

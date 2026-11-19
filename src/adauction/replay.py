@@ -67,6 +67,7 @@ def spend_curve(
     """Replay each strategy at a range of budgets (as shares of logged spend)."""
     logged_spend = cost.sum()
     logged_conv = conv.sum()
+    logged_value = value.sum()
     rows = []
     for name, score in strategies.items():
         for share in budget_shares:
@@ -77,6 +78,7 @@ def spend_curve(
                 budget_share=float(share),
                 spend_share=out["spend"] / logged_spend,
                 conversion_share=out["conversions"] / logged_conv if logged_conv else np.nan,
+                value_share=out["value"] / logged_value if logged_value else np.nan,
             )
             rows.append(out)
     return pd.DataFrame(rows)

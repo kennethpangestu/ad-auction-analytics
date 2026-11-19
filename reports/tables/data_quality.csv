@@ -1,0 +1,22 @@
+check_name,severity,description,failing_rows,passed
+row_count_reconciles,error,Fact table has exactly one row per staged source row,0,1
+spend_reconciles,error,Total spend in the fact table matches the source,0,1
+users_reconcile,error,dim_user has one row per distinct user in the source,0,1
+journeys_reconcile,error,"fact_conversion has one row per (conversion_id, user_id) in the facts",0,1
+no_null_keys,error,"Every impression has a timestamp, user and campaign",0,1
+fk_campaign,error,Every impression joins to dim_campaign,0,1
+fk_date,error,Every impression joins to dim_date,0,1
+fk_user,error,Every impression joins to dim_user,0,1
+flags_are_binary,error,"click, conversion and attributed are 0 or 1",0,1
+prices_positive,error,Price paid (cost) and order value (cpo) are positive,0,1
+conversion_after_impression,error,A conversion never happens before its impression,0,1
+conversion_within_30_days,error,Conversions fall inside the documented 30-day window,0,1
+conversion_fields_consistent,error,"conversion_id, conversion_ts, click_pos and click_nb are set exactly when conversion = 1",0,1
+conversions_are_post_click,error,Only clicked impressions carry a conversion,0,1
+attribution_implies_conversion,error,An impression can only be attributed if it led to a conversion,0,1
+click_position_valid,error,click_pos is between 0 and click_nb - 1,0,1
+journey_is_consistent,error,"Each conversion journey has one campaign, one conversion time and one attribution",0,1
+one_last_click_per_journey,error,No conversion journey has more than one last click,0,1
+conversion_id_shared_by_users,warn,conversion_ids reused by more than one user (collisions from anonymization),2910,0
+journeys_missing_last_click,warn,Conversion journeys whose last click was sampled out of the release,37648,0
+source_sorted_by_time,warn,Source rows arrive in timestamp order (documented by Criteo),0,1

@@ -1,0 +1,110 @@
+{
+  "headline": {
+    "impressions": 16468027,
+    "users": 6142256,
+    "campaigns": 675,
+    "days": 31,
+    "clicks": 5947563,
+    "conversions_with_last_click": 401082,
+    "attributed_conversions": 216528,
+    "spend": 4829.340540947944,
+    "attributed_value": 17254.291177810304,
+    "journeys": 438730,
+    "attributed_journeys": 237157,
+    "avg_clicks_before_conversion": 2.3169717138103163,
+    "attribution_rate": 0.5405534155403096,
+    "cpa": 0.022303538299656134,
+    "dq_checks": 21,
+    "dq_error_checks_passed": 18,
+    "dq_error_checks": 18,
+    "dq_warnings_raised": 2,
+    "etl_seconds": 423.55
+  },
+  "price_deciles": {
+    "top_decile_spend_share": 0.6307698172668093,
+    "top_decile_attributed_share": 0.28587064952338725,
+    "top_decile_cpa": 0.04921246305324688,
+    "bottom_half_spend_share": 0.050189694248955946,
+    "bottom_half_attributed_share": 0.20868894554053052,
+    "bottom_half_cpa": 0.005364001265281272,
+    "bottom_half_order_value": 0.05546955960025593,
+    "top_half_order_value": 0.08607273325213194
+  },
+  "frequency": {
+    "first_impression_cpa": 0.013413546292010121,
+    "first_impression_spend_share": 0.2507759097425936,
+    "over_10_spend_share": 0.159622615125175,
+    "over_10_cpa": 0.03850124695215953
+  },
+  "conversion_delay": {
+    "within_1_hour": 0.4257907360589605,
+    "within_1_day": 0.5679038201664498,
+    "within_7_days": 0.7973357069128009,
+    "after_7_days": 0.20266429308719913
+  },
+  "bidding": {
+    "chosen_c": {
+      "conversion": 0.03,
+      "attribution": 0.03
+    },
+    "train_rows": {
+      "conversion": 1101424,
+      "attribution": 714625
+    },
+    "test_attributed_conversions": 64805,
+    "value_share_at_50": {
+      "Flat bid": 0.7738496646877516,
+      "Campaign average": 0.7863473913919026,
+      "Conversion model": 0.7717066447133597,
+      "Attribution model": 0.8205297445301911
+    },
+    "value_share_at_20": {
+      "Flat bid": 0.43210498247303614,
+      "Campaign average": 0.44262827738456806,
+      "Conversion model": 0.45700885056921337,
+      "Attribution model": 0.5070650768090461
+    },
+    "conversion_share_at_50": {
+      "Flat bid": 0.8188874315253453,
+      "Campaign average": 0.7621788442249826,
+      "Conversion model": 0.6429133554509683,
+      "Attribution model": 0.8064809814057557
+    },
+    "cpa_at_50": {
+      "Flat bid": 0.014669909885064846,
+      "Campaign average": 0.015761411277562944,
+      "Conversion model": 0.01868526660476564,
+      "Attribution model": 0.014895579884173038
+    },
+    "roas_at_50": {
+      "Flat bid": 5.5625707029512395,
+      "Campaign average": 5.652402187426926,
+      "Conversion model": 5.547165077965607,
+      "Attribution model": 5.89811696538861
+    },
+    "attribution_model_on_attribution": {
+      "rows": 5062236.0,
+      "positives": 64805.0,
+      "auc": 0.8588785651328975,
+      "log_loss": 0.054390574246222574,
+      "normalized_entropy": 0.7938921319648168,
+      "calibration": 0.9227147248544643
+    },
+    "conversion_model_on_attribution": {
+      "rows": 5062236.0,
+      "positives": 64805.0,
+      "auc": 0.8350247820766773,
+      "log_loss": 0.08065148152023323,
+      "normalized_entropy": 1.1771998640861154,
+      "calibration": 3.8778776412142366
+    },
+    "conversion_model_on_conversion": {
+      "rows": 5062236.0,
+      "positives": 247078.0,
+      "auc": 0.8426500011568117,
+      "log_loss": 0.1522092998458279,
+      "normalized_entropy": 0.7805980299602538,
+      "calibration": 1.017111440674154
+    }
+  }
+}

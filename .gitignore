@@ -1,0 +1,16 @@
+# Full dataset (download it with `make data`, see data/README.md)
+data/raw/*
+!data/raw/.gitkeep
+
+# Warehouse files are rebuilt by the pipeline
+data/warehouse/
+*.db
+*.db-journal
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.venv/
+.ipynb_checkpoints/
+.DS_Store

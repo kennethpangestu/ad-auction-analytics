@@ -1,0 +1,16 @@
+[project]
+name = "adauction"
+version = "1.0.0"
+description = "ETL pipeline and auction analytics on 16.5M real Criteo ad impressions"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

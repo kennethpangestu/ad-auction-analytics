@@ -156,7 +156,12 @@ def build(db_path: str | Path, out_dir: str | Path, run_bidding: bool = True) ->
         conversions = rows["attributed_conversions"].sum()
         return float(rows["spend"].sum() / conversions) if conversions else float("nan")
 
+    def order_value(rows: pd.DataFrame) -> float:
+        conversions = rows["attributed_conversions"].sum()
+        return float(rows["attributed_value"].sum() / conversions) if conversions else float("nan")
+
     bottom_half = deciles[deciles["price_decile"] <= 5]
+    top_half = deciles[deciles["price_decile"] > 5]
     metrics["price_deciles"] = {
         "top_decile_spend_share": float(top["spend_share"]),
         "top_decile_attributed_share": float(top["attributed_share"]),
@@ -164,6 +169,8 @@ def build(db_path: str | Path, out_dir: str | Path, run_bidding: bool = True) ->
         "bottom_half_spend_share": float(bottom_half["spend_share"].sum()),
         "bottom_half_attributed_share": float(bottom_half["attributed_share"].sum()),
         "bottom_half_cpa": cpa(bottom_half),
+        "bottom_half_order_value": order_value(bottom_half),
+        "top_half_order_value": order_value(top_half),
     }
     first = freq.iloc[0]
     over_10 = freq[freq["bucket_order"] >= 6]
@@ -281,6 +288,8 @@ def _findings_md(m: dict, dq: pd.DataFrame) -> str:
         f"- CPA in that top group: {p['top_decile_cpa']:.4f}, vs {p['bottom_half_cpa']:.4f} in "
         f"the cheapest half (which took {_pct(p['bottom_half_spend_share'])} of spend and earned "
         f"{_pct(p['bottom_half_attributed_share'])} of attributed conversions)",
+        f"- Average value (cpo) of an attributed order: {p['bottom_half_order_value']:.3f} from "
+        f"the cheaper half of impressions, {p['top_half_order_value']:.3f} from the pricier half",
         "",
         "## Frequency",
         "",

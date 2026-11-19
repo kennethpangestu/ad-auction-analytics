@@ -16,6 +16,7 @@ SELECT
     TOTAL(cost)                                         AS spend,
     TOTAL(cost) / (SELECT spend FROM totals)            AS spend_share,
     SUM(credited)                                       AS attributed_conversions,
+    TOTAL(CASE WHEN credited = 1 THEN cpo END)          AS attributed_value,
     1.0 * SUM(credited) / (SELECT attributed FROM totals) AS attributed_share,
     1.0 * SUM(click) / COUNT(*)                         AS ctr,
     1000.0 * SUM(credited) / COUNT(*)                   AS attributed_per_1k,

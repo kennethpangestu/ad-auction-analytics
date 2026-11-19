@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"run {summary.run_id}: loaded {summary.rows_loaded:,} rows in "
             f"{summary.seconds:.1f}s, {summary.checks_passed}/{len(summary.checks)} checks passed"
-            f" ({summary.warnings} warnings)"
+            f" ({summary.warnings} warning{'' if summary.warnings == 1 else 's'})"
         )
     elif args.command == "analyze":
         from . import report
